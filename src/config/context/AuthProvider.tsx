@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   const [persist, setPersist] = useState('');
 
   let localStoragePersitValue = localStorage.getItem('persist');
-
   if (typeof localStoragePersitValue === 'string') {
     setPersist(JSON.parse(localStoragePersitValue) || false);
   }
