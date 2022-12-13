@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from '../server/axios';
-import useAuth from './useAuth';
+import useAuth from './UseAuth';
 
 function useRefreshToken() {
   const { setAuth } = useAuth();
