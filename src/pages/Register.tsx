@@ -5,20 +5,21 @@ import {
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import axios from '../api/axios';
+import axios from '../config/server/axios';
 import { Link } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-// const REGISTER_URL = '/register';
+const REGISTER_URL = '/register';
 
 function Register() {
-  // const userRef = useRef();
-  // const errRef = useRef();
+  const userRef = useRef<HTMLInputElement>(null);
+  const errRef = useRef<HTMLParagraphElement>(null);
 
-  // const [user, setUser] = useState('');
-  // const [validName, setValidName] = useState(false);
-  // const [userFocus, setUserFocus] = useState(false);
+  const [user, setUser] = useState('');
+  const [validName, setValidName] = useState(false);
+  const [userFocus, setUserFocus] = useState(false);
 
   const [pwd, setPwd] = useState('');
   const [validPwd, setValidPwd] = useState(false);
@@ -28,68 +29,70 @@ function Register() {
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
 
-  // const [errMsg, setErrMsg] = useState('');
-  // const [success, setSuccess] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const [success, setSuccess] = useState(false);
 
-  // useEffect(() => {
-  //   userRef.current.focus();
-  // }, []);
+  useEffect(() => {
+    userRef.current!.focus();
+  }, []);
 
-  // useEffect(() => {
-  //   setValidName(USER_REGEX.test(user));
-  // }, [user]);
+  useEffect(() => {
+    setValidName(USER_REGEX.test(user));
+  }, [user]);
 
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(pwd));
     setValidMatch(pwd === matchPwd);
   }, [pwd, matchPwd]);
 
-  // useEffect(() => {
-  //   setErrMsg('');
-  // }, [user, pwd, matchPwd]);
+  useEffect(() => {
+    setErrMsg('');
+  }, [user, pwd, matchPwd]);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   // if button enabled with JS hack
-  //   const v1 = USER_REGEX.test(user);
-  //   const v2 = PWD_REGEX.test(pwd);
-  //   if (!v1 || !v2) {
-  //     setErrMsg('Invalid Entry');
-  //     return;
-  //   }
-  //   try {
-  //     const response = await axios.post(
-  //       REGISTER_URL,
-  //       JSON.stringify({ user, pwd }),
-  //       {
-  //         headers: { 'Content-Type': 'application/json' },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     // TODO: remove console.logs before deployment
-  //     console.log(JSON.stringify(response?.data));
-  //     //console.log(JSON.stringify(response))
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // if button enabled with JS hack
+    const v1 = USER_REGEX.test(user);
+    const v2 = PWD_REGEX.test(pwd);
+    if (!v1 || !v2) {
+      setErrMsg('Invalid Entry');
+      return;
+    }
+    try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify({ user, pwd }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
+      // TODO: remove console.logs before deployment
+      console.log(JSON.stringify(response?.data));
+      //console.log(JSON.stringify(response))
 
-  //     setSuccess(true);
-  //     //clear state and controlled inputs
-  //     setUser('');
-  //     setPwd('');
-  //     setMatchPwd('');
-  //   } catch (err) {
-  //     if (!err?.response) {
-  //       setErrMsg('No Server Response');
-  //     } else if (err.response?.status === 409) {
-  //       setErrMsg('Username Taken');
-  //     } else {
-  //       setErrMsg('Registration Failed');
-  //     }
-  //     errRef.current.focus();
-  //   }
-  // };
+      setSuccess(true);
+      //clear state and controlled inputs
+      setUser('');
+      setPwd('');
+      setMatchPwd('');
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (!err?.response) {
+          setErrMsg('No Server Response');
+        } else if (err.response?.status === 409) {
+          setErrMsg('Username Taken');
+        } else {
+          setErrMsg('Registration Failed');
+        }
+      }
+      errRef.current!.focus();
+    }
+  };
 
   return (
     <>
-      {/* {success ? (
+      {success ? (
         <section>
           <h1>Success!</h1>
           <p>
@@ -231,18 +234,18 @@ function Register() {
             </span>
           </p>
         </section>
-      )} */}
+      )}
       (
       <section>
-        {/* <p
+        <p
           ref={errRef}
           className={errMsg ? 'errmsg' : 'offscreen'}
           aria-live="assertive"
         >
           {errMsg}
-        </p> */}
+        </p>
         <h1>Register</h1>
-        {/* <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <label htmlFor="username">
             Username:
             <FontAwesomeIcon
@@ -356,7 +359,7 @@ function Register() {
           >
             Sign Up
           </button>
-        </form> */}
+        </form>
         <p>
           Already registered?
           <br />
