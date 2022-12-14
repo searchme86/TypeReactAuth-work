@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from '../server/axios';
-import useAuth from './UseAuth';
+import useAuth from './useAuth';
 
 function useLogout() {
   const { setAuth } = useAuth();
