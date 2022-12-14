@@ -65,12 +65,14 @@ function Login() {
     }
   };
 
+  console.log('toggle', persist);
+
   const togglePersist = () => {
     setPersist((prev) => !prev);
   };
 
   useEffect(() => {
-    localStorage.setItem('persist', persist);
+    localStorage.setItem('persist', String(persist));
   }, [persist]);
 
   return (

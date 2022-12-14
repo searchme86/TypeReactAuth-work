@@ -14,6 +14,8 @@ export interface AuthTokenShape {
 interface ContextAuthType {
   auth: AuthTokenShape;
   setAuth: React.Dispatch<SetStateAction<AuthTokenShape>>;
+  persist: boolean;
+  setPersist: React.Dispatch<SetStateAction<ContextAuthType['persist']>>;
 }
 
 const ContextInitialValue: AuthTokenShape = {
@@ -26,12 +28,14 @@ const ContextInitialValue: AuthTokenShape = {
 const AuthContext = createContext<ContextAuthType>({
   auth: ContextInitialValue,
   setAuth: () => null,
+  persist: false,
+  setPersist: () => null,
 });
 
 export const AuthProvider = ({ children }: AuthProviderInterface) => {
   const [auth, setAuth] =
     useState<ContextAuthType['auth']>(ContextInitialValue);
-  const [persist, setPersist] = useState('');
+  const [persist, setPersist] = useState<ContextAuthType['persist']>(false);
 
   let localStoragePersitValue = localStorage.getItem('persist');
   if (typeof localStoragePersitValue === 'string') {
