@@ -33,14 +33,19 @@ const AuthContext = createContext<ContextAuthType>({
 });
 
 export const AuthProvider = ({ children }: AuthProviderInterface) => {
+  let localStoragePersitValue = localStorage.getItem('persist');
+
   const [auth, setAuth] =
     useState<ContextAuthType['auth']>(ContextInitialValue);
-  const [persist, setPersist] = useState<ContextAuthType['persist']>(false);
+  const [persist, setPersist] = useState<ContextAuthType['persist']>(() => {
+    if (typeof localStoragePersitValue === 'string') {
+      const InitialLocalStorageValue =
+        JSON.parse(localStoragePersitValue) || false;
+      return InitialLocalStorageValue;
+    }
+  });
 
-  let localStoragePersitValue = localStorage.getItem('persist');
-  if (typeof localStoragePersitValue === 'string') {
-    setPersist(JSON.parse(localStoragePersitValue) || false);
-  }
+  console.log('localStoragePersitValue', localStoragePersitValue);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth, persist, setPersist }}>
