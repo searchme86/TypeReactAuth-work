@@ -28,7 +28,6 @@ function Users() {
     },
   ]);
   const axiosPrivate = useAxiosPrivate();
-  console.log('3.[Users.tsx] From useAxiosPrivate에서 to User', axiosPrivate);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,9 +42,7 @@ function Users() {
         const response = await axiosPrivate.get('/users', {
           signal: controller.signal,
         });
-        console.log(response.data);
         isMounted && setUsers(response.data);
-        console.log('isMounted', isMounted);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.error(err);
