@@ -30,9 +30,19 @@ function useAxiosPrivate() {
             (responseError?.response?.status === 401 && !prevRequest?.sent)
           ) {
             prevRequest.sent = true;
-            const newAccessToken = await refresh();
-            prevRequest.headers!['Authorization'] = `Bearer ${newAccessToken}`;
-            return axiosPrivate(prevRequest);
+            try {
+              const newAccessToken = await refresh();
+              if (typeof newAccessToken === 'string') {
+                prevRequest.headers![
+                  'Authorization'
+                ] = `Bearer ${newAccessToken}`;
+                return axiosPrivate(prevRequest);
+              }
+            } catch (error) {
+              if (error instanceof AxiosError) {
+                console.error(error);
+              }
+            }
           }
         }
 
