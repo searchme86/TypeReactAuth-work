@@ -22,6 +22,7 @@ function useAxiosResponse() {
       const prevRequest: CustomAxiosRequestConfig = responseError?.config;
       if (responseError.response && !prevRequest?.sent) {
         switch (responseError.response.status) {
+          // ErrorStatus : 401일 경우
           case StatusCode.Unauthorized:
             prevRequest.sent = true;
             try {
@@ -39,6 +40,7 @@ function useAxiosResponse() {
             }
             break;
 
+          // ErrorStatus : 403일 경우
           case StatusCode.Forbidden:
             prevRequest.sent = true;
             try {
