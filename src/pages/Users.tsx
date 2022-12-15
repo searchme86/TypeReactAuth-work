@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAxiosPrivate from '../config/auth/useAxiosPrivate';
 import { AxiosError } from 'axios';
@@ -31,6 +31,8 @@ function Users() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const effectRun = useRef<boolean>(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -50,11 +52,14 @@ function Users() {
       }
     };
 
-    getUsers();
+    if (effectRun.current) {
+      getUsers();
+    }
 
     return () => {
       isMounted = false;
       controller.abort();
+      effectRun.current = true;
     };
   }, []);
 
