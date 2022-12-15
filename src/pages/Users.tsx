@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import useAxiosPrivate from '../config/auth/useAxiosPrivate';
+import useAxiosPrivate from '../config/server/useAxiosPrivate';
 import { AxiosError } from 'axios';
 
 interface UserRole {
@@ -28,6 +28,7 @@ function Users() {
     },
   ]);
   const axiosPrivate = useAxiosPrivate();
+  console.log('3.[Users.tsx] From useAxiosPrivate에서 to User', axiosPrivate);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,6 +45,7 @@ function Users() {
         });
         console.log(response.data);
         isMounted && setUsers(response.data);
+        console.log('isMounted', isMounted);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.error(err);
@@ -59,6 +61,7 @@ function Users() {
     return () => {
       isMounted = false;
       controller.abort();
+
       effectRun.current = true;
     };
   }, []);

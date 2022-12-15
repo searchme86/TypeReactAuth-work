@@ -8,6 +8,9 @@ const LOGIN_URL = '/auth';
 
 function Login() {
   const { setAuth, persist, setPersist } = useAuth();
+  const [user, setUser] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [errMsg, setErrMsg] = useState('');
 
   //persist false
   const navigate = useNavigate();
@@ -17,10 +20,6 @@ function Login() {
   const userRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
 
-  const [user, setUser] = useState('');
-  const [pwd, setPwd] = useState('');
-  const [errMsg, setErrMsg] = useState('');
-
   useEffect(() => {
     userRef.current!.focus();
   }, []);
@@ -28,6 +27,8 @@ function Login() {
   useEffect(() => {
     setErrMsg('');
   }, [user, pwd]);
+
+  useEffect(() => {}, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,7 +42,7 @@ function Login() {
           withCredentials: true,
         }
       );
-      console.log(JSON.stringify(response?.data));
+      console.log('1.로그인하면 출력되는', JSON.stringify(response?.data));
       //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
