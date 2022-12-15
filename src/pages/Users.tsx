@@ -35,17 +35,18 @@ function Users() {
 
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
+    console.log('isMounted', isMounted);
 
     const getUsers = async () => {
       try {
-        const response = await axiosPrivate.get('/users', {
-          signal: controller.signal,
-        });
+        const response = await axiosPrivate.get('/users', {});
         isMounted && setUsers(response.data);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          console.error(err);
+        console.log('isMounted && setUsers 이후', isMounted);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error(error);
+          console.log('error.response', error.response);
+          console.log('error.message', error.message);
           navigate('/login', { state: { from: location }, replace: true });
         }
       }
@@ -57,8 +58,6 @@ function Users() {
 
     return () => {
       isMounted = false;
-      controller.abort();
-
       effectRun.current = true;
     };
   }, []);
