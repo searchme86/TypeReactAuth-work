@@ -1,60 +1,28 @@
 import { useEffect } from 'react';
 import { axiosPrivate } from './axios';
-import useRefreshToken from '../auth/useRefreshToken';
-import useAuth from '../auth/useAuth';
-import { AxiosError } from 'axios';
-import { CustomAxiosRequestConfig } from '../../types/TypeIntercepter';
+import useAxiosRequest from './useAxiosResquest';
+import useAxiosResponse from './useAxiosResponse';
 
 function useAxiosPrivate() {
-  const refresh = useRefreshToken();
-  const { auth } = useAuth();
+  const { auth, onRequest, onRequestError } = useAxiosRequest();
+  const { onResponse, onResponseError } = useAxiosResponse();
 
   useEffect(() => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
-      (config) => {
-        if (!config.headers!['Authorization']) {
-          config.headers!['Authorization'] = `Bearer ${auth?.accessToken}`;
-        }
-        return config;
-      },
-      (error: AxiosError) => Promise.reject(error)
+      onRequest,
+      onRequestError
     );
 
     const responseIntercept = axiosPrivate.interceptors.response.use(
-      (response) => response,
-      async (responseError: AxiosError) => {
-        if (responseError.config !== undefined) {
-          const prevRequest: CustomAxiosRequestConfig = responseError?.config;
-          if (
-            (responseError?.response?.status === 403 && !prevRequest?.sent) ||
-            (responseError?.response?.status === 401 && !prevRequest?.sent)
-          ) {
-            prevRequest.sent = true;
-            try {
-              const newAccessToken = await refresh();
-              if (typeof newAccessToken === 'string') {
-                prevRequest.headers![
-                  'Authorization'
-                ] = `Bearer ${newAccessToken}`;
-                return axiosPrivate(prevRequest);
-              }
-            } catch (error) {
-              if (error instanceof AxiosError) {
-                console.error(error);
-              }
-            }
-          }
-        }
-
-        return Promise.reject(responseError);
-      }
+      onResponse,
+      onResponseError
     );
 
     return () => {
       axiosPrivate.interceptors.request.eject(requestIntercept);
       axiosPrivate.interceptors.response.eject(responseIntercept);
     };
-  }, [auth, refresh]);
+  }, [auth, onRequest, onRequestError, onResponse, onResponseError]);
 
   return axiosPrivate;
 }
