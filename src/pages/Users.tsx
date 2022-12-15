@@ -60,7 +60,7 @@ function Users() {
       isMounted = false;
       effectRun.current = true;
     };
-  }, []);
+  }, [axiosPrivate, location, navigate]);
 
   return (
     <article>
