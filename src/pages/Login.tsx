@@ -43,7 +43,6 @@ function Login() {
         }
       );
       console.log('1.로그인하면 출력되는', JSON.stringify(response?.data));
-      //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
       setAuth({ user, pwd, roles, accessToken });
@@ -65,8 +64,6 @@ function Login() {
       }
     }
   };
-
-  console.log('toggle', persist);
 
   const togglePersist = () => {
     setPersist((prev) => !prev);

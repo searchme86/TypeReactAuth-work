@@ -1,3 +1,10 @@
+/**
+ *
+ *
+ *
+ *
+ *  */
+
 import { createContext, ReactElement, SetStateAction, useState } from 'react';
 
 interface AuthProviderInterface {
@@ -44,8 +51,6 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
       return InitialLocalStorageValue;
     }
   });
-
-  console.log('localStoragePersitValue', localStoragePersitValue);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth, persist, setPersist }}>
