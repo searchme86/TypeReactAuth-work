@@ -32,18 +32,12 @@ function Users() {
   const location = useLocation();
 
   const effectRun = useRef<boolean>(false);
-
   useEffect(() => {
     let isMounted = true;
-    console.log('isMounted', isMounted);
-
     const getUsers = async () => {
       try {
         const { data } = await axiosPrivate.get<UserInfo[]>('/users', {});
-
-        console.log('data', data);
         isMounted && setUsers(data);
-        console.log('isMounted && setUsers 이후', isMounted);
       } catch (error) {
         if (error instanceof AxiosError) {
           console.error(error);
