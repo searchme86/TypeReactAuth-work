@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from '../config/server/axios';
 import { Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import useRegisterState from '../config/util/useRegisterState';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -16,21 +17,30 @@ const REGISTER_URL = '/register';
 function Register() {
   const userRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
-
-  const [user, setUser] = useState('');
-  const [validName, setValidName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false);
-
-  const [pwd, setPwd] = useState('');
-  const [validPwd, setValidPwd] = useState(false);
-  const [pwdFocus, setPwdFocus] = useState(false);
-
-  const [matchPwd, setMatchPwd] = useState('');
-  const [validMatch, setValidMatch] = useState(false);
-  const [matchFocus, setMatchFocus] = useState(false);
-
-  const [errMsg, setErrMsg] = useState('');
-  const [success, setSuccess] = useState(false);
+  const {
+    user,
+    setUser,
+    validName,
+    setValidName,
+    userFocus,
+    setUserFocus,
+    pwd,
+    setPwd,
+    setValidPwd,
+    validPwd,
+    setPwdFocus,
+    pwdFocus,
+    matchPwd,
+    setMatchPwd,
+    validMatch,
+    setValidMatch,
+    matchFocus,
+    setMatchFocus,
+    errMsg,
+    setErrMsg,
+    success,
+    setSuccess,
+  } = useRegisterState();
 
   useEffect(() => {
     userRef.current!.focus();
@@ -38,16 +48,16 @@ function Register() {
 
   useEffect(() => {
     setValidName(USER_REGEX.test(user));
-  }, [user]);
+  }, [user, setValidName]);
 
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(pwd));
     setValidMatch(pwd === matchPwd);
-  }, [pwd, matchPwd]);
+  }, [pwd, matchPwd, setValidMatch, setValidPwd]);
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, pwd, matchPwd]);
+  }, [user, pwd, matchPwd, setErrMsg]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
