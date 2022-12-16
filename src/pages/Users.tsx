@@ -8,7 +8,7 @@ interface UserRole {
   [key: string]: number;
 }
 
-interface UserList {
+interface UserInfo {
   password: string;
   refreshToken: string;
   roles: UserRole[];
@@ -18,7 +18,7 @@ interface UserList {
 }
 
 function Users() {
-  const [users, setUsers] = useState<UserList[]>([
+  const [users, setUsers] = useState<UserInfo[]>([
     {
       password: '',
       refreshToken: '',
@@ -39,8 +39,10 @@ function Users() {
 
     const getUsers = async () => {
       try {
-        const response = await axiosPrivate.get('/users', {});
-        isMounted && setUsers(response.data);
+        const { data } = await axiosPrivate.get<UserInfo[]>('/users', {});
+
+        console.log('data', data);
+        isMounted && setUsers(data);
         console.log('isMounted && setUsers 이후', isMounted);
       } catch (error) {
         if (error instanceof AxiosError) {
