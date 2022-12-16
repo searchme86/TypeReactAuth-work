@@ -2,8 +2,15 @@ import { useRef, useState, useEffect } from 'react';
 import useAuth from '../config/auth/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
-
 import axios from '../config/server/axios';
+
+interface UserLogin {
+  user: string;
+  pwd: string;
+  roles: number[];
+  accessToken: string;
+}
+
 const LOGIN_URL = '/auth';
 
 function Login() {
@@ -34,7 +41,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
+      const response = await axios.post<UserLogin>(
         LOGIN_URL,
         JSON.stringify({ user, pwd }),
         {

@@ -13,7 +13,7 @@ interface UserInfo {
   refreshToken: string;
   roles: UserRole[];
   username: string;
-  _id: string;
+  _id?: string;
   __v?: number;
 }
 

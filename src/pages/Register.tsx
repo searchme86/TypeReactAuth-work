@@ -14,6 +14,11 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const REGISTER_URL = '/register';
 
+export interface CreateUser {
+  user: string;
+  pwd: string;
+}
+
 function Register() {
   const userRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -69,7 +74,7 @@ function Register() {
       return;
     }
     try {
-      const response = await axios.post(
+      const response = await axios.post<CreateUser>(
         REGISTER_URL,
         JSON.stringify({ user, pwd }),
         {
