@@ -6,7 +6,34 @@ import { axiosPrivate } from './axios';
 enum StatusCode {
   Unauthorized = 401,
   Forbidden = 403,
+  NOT_FOUND = 404,
 }
+
+const getErrorMessage = (responseStatus: number) => {
+  if (responseStatus === StatusCode.Forbidden) return '';
+  // if (res)
+};
+
+const handlerByStatus = async (
+  response: AxiosResponse,
+  prevReq: CustomAxiosRequestConfig,
+  refreshFunc: () => Promise<string | undefined>
+) => {
+  prevReq.sent = true;
+  const errorMSg = getErrorMessage(response.status);
+
+  try {
+    const newAccessToken = await refreshFunc();
+    if (typeof newAccessToken === 'string') {
+      prevReq.headers!['Authorization'] = `Bearer ${newAccessToken}`;
+      return axiosPrivate(prevReq);
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.error(error);
+    }
+  }
+};
 
 function useAxiosResponse() {
   const refresh = useRefreshToken();
@@ -20,44 +47,10 @@ function useAxiosResponse() {
   ): Promise<AxiosError> => {
     if (responseError.config !== undefined) {
       const prevRequest: CustomAxiosRequestConfig = responseError?.config;
-      if (responseError.response && !prevRequest?.sent) {
-        switch (responseError.response.status) {
-          // ErrorStatus : 401일 경우
-          case StatusCode.Unauthorized:
-            prevRequest.sent = true;
-            try {
-              const newAccessToken = await refresh();
-              if (typeof newAccessToken === 'string') {
-                prevRequest.headers![
-                  'Authorization'
-                ] = `Bearer ${newAccessToken}`;
-                return axiosPrivate(prevRequest);
-              }
-            } catch (error) {
-              if (error instanceof AxiosError) {
-                console.error(error);
-              }
-            }
-            break;
+      const response = responseError.response;
 
-          // ErrorStatus : 403일 경우
-          case StatusCode.Forbidden:
-            prevRequest.sent = true;
-            try {
-              const newAccessToken = await refresh();
-              if (typeof newAccessToken === 'string') {
-                prevRequest.headers![
-                  'Authorization'
-                ] = `Bearer ${newAccessToken}`;
-                return axiosPrivate(prevRequest);
-              }
-            } catch (error) {
-              if (error instanceof AxiosError) {
-                console.error(error);
-              }
-            }
-            break;
-        }
+      if (response && !prevRequest?.sent) {
+        handlerByStatus(response, prevRequest, refresh);
       }
     }
     return Promise.reject(responseError);
