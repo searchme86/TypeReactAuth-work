@@ -7,6 +7,7 @@ import useMutation from '../config/server/useMutation';
 import useAxiosPost from '../config/server/useAxiosPost';
 
 const LOGIN_URL = '/auth';
+
 interface UserLogin {
   user: string;
   pwd: string;
@@ -37,16 +38,10 @@ function Login() {
     pwd,
   };
 
-  // useAxiosPost.tsx와 연결됨
-  // 이슈:1. useAxiosPost.tsx에서 data.accessToken;, accessToken이 접근안됨
-  // 이슈:2. useAxiosPost.tsx에서 return { postdata, axiosPost };, postData기 return 안됨
-  //postdata를 useAxiosPost에서 return 했음에도 Login.tsx에서 null 값이 나옴
-  const { postdata, axiosPost } = useAxiosPost<UserLogin, InputType>(
-    '/auth',
-    postInput,
-    initialValue,
-    setAuth
-  );
+  const { response, axiosPost, loading, errorMessage } = useAxiosPost<
+    InputType,
+    UserLogin
+  >(LOGIN_URL, { user, pwd });
 
   //persist false
   const navigate = useNavigate();
@@ -68,19 +63,17 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    axiosPost();
-    console.log('postData', postdata);
-    if (postdata) {
-      console.log('1.로그인하면 출력되는', JSON.stringify(postdata));
-      const accessToken = postdata?.accessToken;
-      console.log('accessToken', accessToken);
-      const roles = postdata?.roles;
-      console.log('roles', roles);
-      setAuth({ user, pwd, roles, accessToken });
-    }
-    setUser('');
-    setPwd('');
-    navigate(from, { replace: true });
+    await axiosPost();
+    console.log('response', response);
+    // if (!loading && response) {
+    //   // setAuth({ user, pwd, roles, accessToken });
+    //   // console.log('1.로그인하면 출력되는', JSON.stringify(response));
+    //   console.log('1.로그인하면 출력되는', response);
+    //   const accessToken = response?.accessToken;
+    //   console.log('accessToken', accessToken);
+    //   const roles = response?.roles;
+    //   console.log('roles', roles);
+    // }
 
     // try {
     //   const response = await axios.post<UserLogin>(
