@@ -12,3 +12,8 @@ export const axiosPrivate: CustomAxiosInstance = axios.create({
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
+
+// 인가, 인증
+// authz, authn
+// not found - authn
+// forbbiden - authz

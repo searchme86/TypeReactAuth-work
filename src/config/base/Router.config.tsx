@@ -10,6 +10,7 @@ import Unauthorized from '../../pages/Unauthorized';
 import Admin from '../../pages/Admin';
 import Lounge from '../../pages/Lounge';
 import Missing from '../../pages/Missing';
+import ReduxTest from 'src/pages/ReduxTest';
 
 function Router() {
   return (
@@ -24,6 +25,9 @@ function Router() {
         <Route path="/editor" element={<Editor />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/lounge" element={<Lounge />} />
+        {/*  */}
+        <Route path="/redux" element={<ReduxTest />} />
+        {/*  */}
         <Route path="*" element={<Missing />} />
       </Route>
     </Routes>

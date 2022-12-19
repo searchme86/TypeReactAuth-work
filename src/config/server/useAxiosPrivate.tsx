@@ -3,6 +3,9 @@ import { axiosPrivate } from './axios';
 import useAxiosRequest from './useAxiosResquest';
 import useAxiosResponse from './useAxiosResponse';
 
+// get
+// upload -> succes-> get
+
 function useAxiosPrivate() {
   const { auth, onRequest, onRequestError } = useAxiosRequest();
   const { onResponse, onResponseError } = useAxiosResponse();

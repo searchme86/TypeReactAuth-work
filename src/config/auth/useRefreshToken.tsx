@@ -1,11 +1,3 @@
-/**
- *
- *
- *
- *
- *  */
-
-import React from 'react';
 import axios from '../server/axios';
 import useAuth from './useAuth';
 
@@ -38,6 +30,7 @@ function useRefreshToken() {
           accessToken,
         };
       });
+
       return accessToken;
     } catch (error) {
       if (error instanceof AxiosError) {
