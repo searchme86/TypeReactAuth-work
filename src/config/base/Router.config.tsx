@@ -11,6 +11,7 @@ import Admin from '../../pages/Admin';
 import Lounge from '../../pages/Lounge';
 import Missing from '../../pages/Missing';
 import ReduxTest from 'src/pages/ReduxTest';
+import WrapCounter from 'src/store/base/WrapCounter';
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function Router() {
         <Route path="/lounge" element={<Lounge />} />
         {/*  */}
         <Route path="/redux" element={<ReduxTest />} />
+        <Route path="/test" element={<WrapCounter />} />
         {/*  */}
         <Route path="*" element={<Missing />} />
       </Route>
