@@ -49,40 +49,31 @@ function Users() {
   useEffect(() => {
     console.log('location change');
   }, [location]);
+
   useEffect(() => {
     let isMounted = true;
+    console.log('isMounted', isMounted);
 
-    console.log('useEffect start', isMounted, effectRun, users);
+    const getUsers = async () => {
+      try {
+        const response = await axiosPrivate.get('/users', {});
+        isMounted && setUsers(response.data);
+        console.log('isMounted && setUsers 이후', isMounted);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error(error);
+          console.log('error.response', error.response);
+          console.log('error.message', error.message);
+          navigate('/login', { state: { from: location }, replace: true });
+        }
+      }
+    };
 
     if (effectRun.current) {
-      const getUsers = async () => {
-        console.log('getUsers start', isMounted, effectRun, users);
-        try {
-          const { data } = await axiosPrivate.get<UserInfo[]>('/users', {});
-          if (isMounted) {
-            console.log('getUsers-if condition', isMounted, effectRun, users);
-            setUsers(data);
-          }
-        } catch (error) {
-          if (error instanceof AxiosError) {
-            console.error(error);
-            console.log('error.response', error.response);
-            console.log('error.message', error.message);
-            navigate('/login', { state: { from: location }, replace: true });
-          }
-        }
-      };
-      console.log(
-        'effectRun.current-if condition',
-        isMounted,
-        effectRun,
-        users
-      );
       getUsers();
     }
 
     return () => {
-      console.log('cleanup', isMounted, effectRun, users);
       isMounted = false;
       effectRun.current = true;
     };
