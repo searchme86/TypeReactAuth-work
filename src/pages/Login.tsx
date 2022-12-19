@@ -36,14 +36,13 @@ function Login() {
     user,
     pwd,
   };
-  const { postdata, axiosPost } = useAxiosPost<UserLogin, InputType>(
-    '/auth',
-    postInput,
-    initialValue,
-    setAuth
-  );
 
-  console.log('Login.tsx, data', postdata);
+  // const { postdata, axiosPost } = useAxiosPost<UserLogin, InputType>(
+  //   '/auth',
+  //   postInput,
+  //   initialValue,
+  //   setAuth
+  // );
 
   //persist false
   const navigate = useNavigate();
@@ -65,7 +64,7 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    axiosPost();
+    // axiosPost();
     // console.log('postData', postdata);
     // if (data) {
     // console.log('1.로그인하면 출력되는', JSON.stringify(data));
@@ -77,39 +76,39 @@ function Login() {
     // }
     // setUser('');
     // setPwd('');
-    navigate(from, { replace: true });
+    // navigate(from, { replace: true });
 
-    // try {
-    //   const response = await axios.post<UserLogin>(
-    //     LOGIN_URL,
-    //     JSON.stringify({ user, pwd }),
-    //     {
-    //       headers: { 'Content-Type': 'application/json' },
-    //       withCredentials: true,
-    //     }
-    //   );
-    //   console.log('1.로그인하면 출력되는', JSON.stringify(response?.data));
-    //   const accessToken = response?.data?.accessToken;
-    //   const roles = response?.data?.roles;
-    //   setAuth({ user, pwd, roles, accessToken });
-    //   //여기까지
-    //   setUser('');
-    //   setPwd('');
-    //   navigate(from, { replace: true });
-    // } catch (err) {
-    //   if (err instanceof AxiosError) {
-    //     if (!err?.response) {
-    //       setErrMsg('No Server Response');
-    //     } else if (err.response?.status === 400) {
-    //       setErrMsg('Missing Username or Password');
-    //     } else if (err.response?.status === 401) {
-    //       setErrMsg('Unauthorized');
-    //     } else {
-    //       setErrMsg('Login Failed');
-    //     }
-    //     errRef.current!.focus();
-    //   }
-    // }
+    try {
+      const response = await axios.post<UserLogin>(
+        LOGIN_URL,
+        JSON.stringify({ user, pwd }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
+      console.log('1.로그인하면 출력되는', JSON.stringify(response?.data));
+      const accessToken = response?.data?.accessToken;
+      const roles = response?.data?.roles;
+      setAuth({ user, pwd, roles, accessToken });
+      //여기까지
+      setUser('');
+      setPwd('');
+      navigate(from, { replace: true });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (!err?.response) {
+          setErrMsg('No Server Response');
+        } else if (err.response?.status === 400) {
+          setErrMsg('Missing Username or Password');
+        } else if (err.response?.status === 401) {
+          setErrMsg('Unauthorized');
+        } else {
+          setErrMsg('Login Failed');
+        }
+        errRef.current!.focus();
+      }
+    }
   };
 
   const togglePersist = () => {

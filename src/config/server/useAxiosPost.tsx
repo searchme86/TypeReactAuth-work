@@ -22,7 +22,7 @@ function useAxiosPost<T, U>(
         withCredentials: true,
       });
       console.log('data', data);
-      const accessToken = data.accessToken;
+      // const accessToken = data.accessToken;
       // console.log('accessToken', accessToken);
       // const roles = data.roles;
       // console.log('roles', roles);
