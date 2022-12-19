@@ -1,3 +1,20 @@
+/**
+ * useAxioPost.tsx
+ * Axios의 post 메서드 기능을 하기 위한 모듈
+ *
+ * setHandler
+ * : axios POST한 후 받은 data를 setState하기 위한 핸들러, 외부에서 받은 콜백함수
+ * : setAuth함수를 가리킴
+ *
+ * setPostData
+ * : axios POST한 후 받은 data를 setState하기 위한 useAxiosPost.tsx의 내부 state 함수
+ * : 외부로 data를 return 하기 위한 용도
+ * : 굳이 필요한거 같지 않아 지웠지만,
+ * : 필요한지 의문이 듦
+ *
+ *
+ *  */
+
 import { useState } from 'react';
 import { AxiosError, AxiosResponse } from 'axios';
 import axios from '../server/axios';
@@ -22,11 +39,16 @@ function useAxiosPost<T, U>(
         withCredentials: true,
       });
       console.log('data', data);
-      // const accessToken = data.accessToken;
-      // console.log('accessToken', accessToken);
-      // const roles = data.roles;
-      // console.log('roles', roles);
+
+      const accessToken = data.accessToken;
+      const roles = data.roles;
+
+      console.log('accessToken', accessToken);
+      console.log('roles', roles);
+
       setPostData(data);
+      setHandler(data);
+
       console.log('postData', postdata);
       console.log('여기가 문제인가? data', data);
     } catch (error) {
