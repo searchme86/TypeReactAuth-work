@@ -1,34 +1,28 @@
-import { useState } from 'react';
-import { AxiosError, AxiosResponse } from 'axios';
+import { useState, useCallback } from 'react';
+import { AxiosError } from 'axios';
 import axios from '../server/axios';
-import { AuthTokenShape } from '../context/AuthProvider';
-import { SetStateAction } from 'react';
 
-function useAxiosPost<T, U>(
+function useAxiosPost<T, R>(
   url: string,
-  inputData: U,
-  initialValue: T,
-  setHandler: React.Dispatch<SetStateAction<AuthTokenShape>>
-) {
+  args: T
+): {
+  response: R;
+  axiosPost: () => void;
+  loading: boolean;
+  errorMessage: string;
+} {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [postdata, setPostData] = useState<T>(initialValue);
+  const [response, setResponse] = useState<R | null>(null);
 
-  const axiosPost = async () => {
+  const axiosPost = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post<T>(url, JSON.stringify(inputData), {
+      const { data } = await axios.post(url, JSON.stringify(args), {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
-      console.log('data', data);
-      // const accessToken = data.accessToken;
-      // console.log('accessToken', accessToken);
-      // const roles = data.roles;
-      // console.log('roles', roles);
-      setPostData(data);
-      console.log('postData', postdata);
-      console.log('여기가 문제인가? data', data);
+      setResponse(data);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log('진입');
@@ -46,9 +40,13 @@ function useAxiosPost<T, U>(
     } finally {
       setLoading(false);
     }
-  };
+  }, [url, args]);
 
-  return { postdata, axiosPost };
+  if (!response) {
+    throw Error('logic Error');
+  }
+
+  return { response, axiosPost, loading, errorMessage };
 }
 
 export default useAxiosPost;
